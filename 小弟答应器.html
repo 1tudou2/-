@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>你愿意做我小弟吗？</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #FF8C42 0%, #FF6B6B 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hamburger-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+        
+        .header {
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #FF6B6B;
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .emoji {
+            font-size: 60px;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .question-box {
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFE8D6 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #FF8C42;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .question {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            padding: 18px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .yes-btn {
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .yes-btn:hover, .yes-btn:active {
+            background: linear-gradient(to right, #3d8b40, #689F38);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+        
+        .no-btn {
+            background: linear-gradient(to right, #FF416C, #FF4B2B);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .no-btn:hover, .no-btn:active {
+            background: linear-gradient(to right, #d32f2f, #b71c1c);
+            box-shadow: 0 10px 20px rgba(255, 65, 108, 0.3);
+        }
+        
+        .response {
+            display: none;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .yes-response {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: #2E7D32;
+            border: 2px dashed #4CAF50;
+        }
+        
+        .no-response {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: #C62828;
+            border: 2px dashed #F44336;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .footer {
+            margin-top: 30px;
+            color: #777;
+            font-size: 14px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .hamburger-footer {
+            color: #FF6B6B;
+            font-weight: bold;
+        }
+        
+        .escape-note {
+            color: #ff9800;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .click-counter {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .counter-number {
+            color: #FF6B6B;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        /* 强制同意动画 */
+        @keyframes forcedAgreement {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); background: linear-gradient(to right, #FFD700, #FFA500); }
+            100% { transform: scale(1.5); background: linear-gradient(to right, #4CAF50, #8BC34A); }
+        }
+        
+        .forced-agreement {
+            animation: forcedAgreement 1s forwards;
+        }
+        
+        /* 微信适配样式 */
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .question {
+                font-size: 20px;
+            }
+            
+            .btn {
+                padding: 16px 20px;
+                font-size: 18px;
+            }
+            
+            .emoji {
+                font-size: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hamburger-icon">🍔</div>
+        <div class="header">
+            <h1><i class="fas fa-crown"></i> 🍔大哥的邀请</h1>
+            <p class="subtitle">请慎重考虑你的选择，这可能会影响你未来的命运！</p>
+        </div>
+        
+        <div class="emoji">🤔</div>
+        
+        <div class="question-box">
+            <p class="question">你愿不愿意做我小弟？</p>
+        </div>
+        
+        <div class="click-counter">
+            拒绝次数: <span class="counter-number" id="clickCount">0</span>/5
+        </div>
+        
+        <div class="options">
+            <button class="btn yes-btn" id="yesBtn">
+                <i class="fas fa-thumbs-up"></i> 愿意
+            </button>
+            <button class="btn no-btn" id="noBtn">
+                <i class="fas fa-thumbs-down"></i> 不愿意
+            </button>
+        </div>
+        
+        <div class="response" id="yesResponse">
+            <i class="fas fa-check-circle"></i> 太棒了！从现在开始你就是我的小弟了！以后🍔大哥罩着你！
+        </div>
+        
+        <div class="response" id="noResponse">
+            <i class="fas fa-times-circle"></i> 居然拒绝我？你会后悔的！再给你一次机会考虑一下！
+        </div>
+        
+        <div class="footer">
+            <p class="hamburger-footer">© 🍔大哥 版权所有</p>
+            <p class="escape-note">提示：一直点"不愿意"会触发特殊效果哦！</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const yesBtn = document.getElementById('yesBtn');
+            const noBtn = document.getElementById('noBtn');
+            const yesResponse = document.getElementById('yesResponse');
+            const noResponse = document.getElementById('noResponse');
+            const emoji = document.querySelector('.emoji');
+            const clickCountDisplay = document.getElementById('clickCount');
+            
+            // 恶搞拒绝文本数组
+            const noTexts = [
+                "你认真的吗？",
+                "要不再考虑考虑？",
+                "别这么快拒绝嘛~",
+                "🍔大哥会很伤心的😢",
+                "给个面子呗？",
+                "你确定不再想想？",
+                "错过这村没这店了！",
+                "机会难得哦！",
+                "拒绝🍔大哥后果很严重！",
+                "最后一次机会了！"
+            ];
+            
+            let clickCount = 0;
+            let yesBtnSize = 1.0; // 愿意按钮初始缩放比例
+            let noBtnSize = 1.0;  // 不愿意按钮初始缩放比例
+            let isForcedAgreement = false; // 是否已强制同意
+            
+            // 愿意按钮点击事件
+            yesBtn.addEventListener('click', function() {
+                if (isForcedAgreement) {
+                    yesResponse.innerHTML = '<i class="fas fa-check-circle"></i> 哈哈哈，终于想通了！从今以后你就是🍔大哥的小弟了！';
+                } else {
+                    yesResponse.innerHTML = '<i class="fas fa-check-circle"></i> 太棒了！从现在开始你就是🍔大哥的小弟了！以后大哥罩着你！';
+                }
+                
+                yesResponse.style.display = 'block';
+                noResponse.style.display = 'none';
+                emoji.textContent = '😎🍔🎉';
+                
+                // 重置按钮大小
+                resetButtonSizes();
+                
+                // 添加庆祝效果
+                hamburgerConfettiEffect();
+            });
+            
+            // 不愿意按钮点击事件
+            noBtn.addEventListener('click', function() {
+                if (isForcedAgreement) return; // 如果已强制同意，不再处理点击
+                
+                // 增加点击计数
+                clickCount++;
+                clickCountDisplay.textContent = clickCount;
+                
+                // 随机选择拒绝文本
+                const randomText = noTexts[Math.floor(Math.random() * noTexts.length)];
+                noBtn.innerHTML = `<i class="fas fa-thumbs-down"></i> ${randomText}`;
+                
+                // 增大愿意按钮，减小拒绝按钮
+                yesBtnSize += 0.1;
+                noBtnSize = Math.max(0.5, noBtnSize - 0.1); // 最小缩小到0.5倍
+                
+                yesBtn.style.transform = `scale(${yesBtnSize})`;
+                noBtn.style.transform = `scale(${noBtnSize})`;
+                
+                // 显示拒绝回应
+                noResponse.style.display = 'block';
+                yesResponse.style.display = 'none';
+                
+                // 根据点击次数更新表情和消息
+                updateResponseByClickCount();
+                
+                // 如果点击5次，触发强制同意
+                if (clickCount >= 5 && !isForcedAgreement) {
+                    triggerForcedAgreement();
+                }
+            });
+            
+            // 根据点击次数更新响应
+            function updateResponseByClickCount() {
+                if (clickCount === 1) {
+                    emoji.textContent = '😐';
+                    noResponse.innerHTML = '<i class="fas fa-frown"></i> 什么？居然拒绝🍔大哥？再想想！';
+                } else if (clickCount === 2) {
+                    emoji.textContent = '😒';
+                    noResponse.innerHTML = '<i class="fas fa-angry"></i> 你这是在挑战我的耐心！最后一次警告！';
+                } else if (clickCount === 3) {
+                    emoji.textContent = '😠';
+                    noResponse.innerHTML = '<i class="fas fa-fire"></i> 我的🍔之力要爆发了！你跑不掉的！';
+                } else if (clickCount === 4) {
+                    emoji.textContent = '😡';
+                    noResponse.innerHTML = '<i class="fas fa-skull-crossbones"></i> 最后一次机会了！再不答应后果自负！';
+                }
+            }
+            
+            // 触发强制同意
+            function triggerForcedAgreement() {
+                isForcedAgreement = true;
+                emoji.textContent = '😈🍔💥';
+                
+                // 禁用拒绝按钮
+                noBtn.disabled = true;
+                noBtn.innerHTML = '<i class="fas fa-ban"></i> 已禁用';
+                noBtn.style.opacity = '0.5';
+                
+                // 强制同意动画
+                yesBtn.classList.add('forced-agreement');
+                yesBtn.innerHTML = '<i class="fas fa-crown"></i> 🍔大哥的小弟';
+                
+                // 显示强制同意消息
+                noResponse.style.display = 'block';
+                noResponse.innerHTML = '<i class="fas fa-gavel"></i> 警告！检测到多次拒绝！系统已强制同意！';
+                noResponse.style.backgroundColor = '#FFEAA7';
+                noResponse.style.color = '#D63031';
+                noResponse.style.border = '2px solid #D63031';
+                
+                // 3秒后自动触发同意
+                setTimeout(() => {
+                    yesBtn.click();
+                }, 3000);
+            }
+            
+            // 重置按钮大小
+            function resetButtonSizes() {
+                clickCount = 0;
+                clickCountDisplay.textContent = '0';
+                yesBtnSize = 1.0;
+                noBtnSize = 1.0;
+                yesBtn.style.transform = 'scale(1)';
+                noBtn.style.transform = 'scale(1)';
+                isForcedAgreement = false;
+                
+                // 重置拒绝按钮
+                noBtn.disabled = false;
+                noBtn.innerHTML = '<i class="fas fa-thumbs-down"></i> 不愿意';
+                noBtn.style.opacity = '1';
+                yesBtn.innerHTML = '<i class="fas fa-thumbs-up"></i> 愿意';
+                yesBtn.classList.remove('forced-agreement');
+            }
+            
+            // 🍔主题庆祝效果函数
+            function hamburgerConfettiEffect() {
+                const confettiCount = 100;
+                const hamburgerEmojis = ['🍔', '🍟', '🥤', '🍕', '🌭', '🍦', '🍩', '🎂'];
+                
+                for (let i = 0; i < confettiCount; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.innerHTML = hamburgerEmojis[Math.floor(Math.random() * hamburgerEmojis.length)];
+                        confetti.style.position = 'fixed';
+                        confetti.style.fontSize = Math.random() * 20 + 10 + 'px';
+                        confetti.style.left = Math.random() * 100 + 'vw';
+                        confetti.style.top = '-50px';
+                        confetti.style.zIndex = '9999';
+                        confetti.style.pointerEvents = 'none';
+                        confetti.style.opacity = Math.random() + 0.5;
+                        
+                        document.body.appendChild(confetti);
+                        
+                        // 动画
+                        const animation = confetti.animate([
+                            { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                            { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                        ], {
+                            duration: Math.random() * 3000 + 2000,
+                            easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+                        });
+                        
+                        // 动画结束后移除元素
+                        animation.onfinish = () => confetti.remove();
+                    }, i * 30);
+                }
+            }
+            
+            // 添加触摸事件支持，确保在微信中正常工作
+            yesBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                yesBtn.click();
+            });
+            
+            noBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                if (!isForcedAgreement) {
+                    noBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
